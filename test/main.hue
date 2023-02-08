@@ -1,0 +1,14 @@
+function sum
+{
+    Int x = 10
+    Int y = 30
+    
+    Int c = 0
+    c += x
+    c += y
+
+    ret c
+}
+
+//Expected answer: 40
+@sum

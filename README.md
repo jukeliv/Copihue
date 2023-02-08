@@ -1,2 +1,3 @@
 # Copihue
- Copihue is an open-source, statically typed programming language made in Chile with C++
+ Copihue the first programming language made in Chile.
+ It is an open-source, statically typed programming language made with C++

@@ -4,23 +4,23 @@ size_t assembler_if_syntax_check(Token_List ls, int index)
 {
     if(ls[index+1].type == OPEN_P && ls[index+2].type == ID){
         if(ls[index+3].type == EQUALS && ls[index+4].type == EQUALS){
-            if(isType(ls[index+5].type))
+            if(isCorrectType(ls[index+5].type, ls[index+1].type))
             {
                 return 5;
             }
         }
         else if(ls[index+3].type == FCALL && ls[index+4].type == EQUALS)
-            if(isType(ls[index+5].type))
+            if(isCorrectType(ls[index+5].type, ls[index+1].type))
             {
                 return 5;
             }
         else if(ls[index+3].type == GREATERT)
-            if(isType(ls[index+4].type))
+            if(isCorrectType(ls[index+4].type, ls[index+1].type))
             {
                 return 4;
             }
         else if(ls[index+3].type == LESST)
-            if(isType(ls[index+4].type))
+            if(isCorrectType(ls[index+4].type, ls[index+1].type))
             {
                 return 4;
             }
@@ -39,6 +39,7 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             i++;
             continue;
         }
+
         if(tokens[i].type ==  LOGIC_STATEMENT)
         {
             if(tokens[i].value == "if")
@@ -52,19 +53,19 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
                 }
 
                     asms.push_back(ASM({}, STATEMENT));
-                    asms[asms.size()].arguments.push_back(tokens[i++].value);
+                    asms[asms.size()-1].arguments.push_back(tokens[i++].value);
                     
                     i++;
 
                 while(i < len)
-                    asms[asms.size()].arguments.push_back(tokens[i++].value);
+                    asms[asms.size()-1].arguments.push_back(tokens[i++].value);
                 
                 continue;
             }
             else if (tokens[i].value == "else")
             {
                 asms.push_back(ASM({}, STATEMENT));
-                asms[asms.size()].arguments.push_back(tokens[i++].value);
+                asms[asms.size()-1].arguments.push_back(tokens[i++].value);
                 continue;
             }
             else
@@ -79,8 +80,8 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             if(tokens[i+1].type == PLUS)
             {
                 asms.push_back(ASM({}, ADDITION));
-                asms[asms.size()].arguments.push_back(tokens[i].value);
-                asms[asms.size()].arguments.push_back(tokens[i+3].value);
+                asms[asms.size()-1].arguments.push_back(tokens[i].value);
+                asms[asms.size()-1].arguments.push_back(tokens[i+3].value);
                 i+=4;
                 continue;
             }
@@ -89,10 +90,10 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             {
                 //X = 1
                 asms.push_back(ASM({}, SET));
-                asms[asms.size()].arguments.push_back(tokens[i].value);
-                asms[asms.size()].arguments.push_back(tokens[i+2].value);
+                asms[asms.size()-1].arguments.push_back(tokens[i].value);
+                asms[asms.size()-1].arguments.push_back(tokens[i+2].value);
 
-                i+=4;
+                i+=3;
                 continue;
             }
 
@@ -110,9 +111,7 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             }
 
             asms.push_back(ASM({}, FUNCTION));
-            asms[asms.size()].arguments.push_back(tokens[i].value);
-            
-            i++;
+            asms[asms.size()-1].arguments.push_back(tokens[i++].value);
             continue;
         }
 
@@ -124,12 +123,39 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
                 return false;
             }
 
+            if(tokens[i+2].type != OPEN_P)
+            {
+                fprintf(stderr, "Syntax Error!!!\n Function Call Check\n%d : %s\n", tokens[i+1].type, tokens[i+1].value.c_str());
+                return false;
+            }
+
             i++;
-            
+
             asms.push_back(ASM({}, FUNCTION_CALL));
-            asms[asms.size()].arguments.push_back(tokens[i].value);
+            asms[asms.size()-1].arguments.push_back(tokens[i].value);
             
+            size_t j = i+2;
+            size_t len = 0;
+            
+            while(tokens[j].type != CLOSE_C)
+            {
+                asms[asms.size()-1].arguments.push_back(tokens[j++].value);
+                len++;
+            }
+            i+=len;
+            continue;
+        }
+
+        if(tokens[i].type == USING)
+        {
             i++;
+            if(tokens[i+1].type != ID)
+            {
+                fprintf(stderr, "Syntax Error!!!\n using library\n");
+                return false;
+            }
+            asms.push_back(ASM({}, INCLUDE_LIBRARY));
+            asms[asms.size()-1].arguments.push_back(tokens[i++].value);
             continue;
         }
 
@@ -168,8 +194,10 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             }
 
             asms.push_back(ASM({}, ANY_VAR));
-            asms[asms.size()].arguments.push_back(tokens[i].value);
-            asms[asms.size()].arguments.push_back(tokens[i+3].value);
+
+            asms[asms.size()-1].arguments.push_back(tokens[i].value);
+            asms[asms.size()-1].arguments.push_back(tokens[i+1].value);
+            asms[asms.size()-1].arguments.push_back(tokens[i+3].value);
             
             i+=4;
             continue;

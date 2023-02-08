@@ -13,7 +13,8 @@ typedef enum _ASM_Type
     OPEN_COLON,
     CLOSE_COLON,
     ANY_VAR,
-    STATEMENT
+    STATEMENT,
+    INCLUDE_LIBRARY
 }ASM_Type;
 
 class ASM

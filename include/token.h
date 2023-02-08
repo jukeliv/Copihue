@@ -14,7 +14,7 @@ typedef enum _Token_Type
     MEMSET,             // memset(bank, variable, value) // SETS THE VALUE OF A MEMORY LOCATION
     MEMACC,             // memacc(53546, charPosition)  // SETS MEMORY TO A VARIABLE
     */
-    //USER FUNCTIONS
+    //FUNCTIONS
     FUNC,               // function
     FCALL,              // @FUNC_NAME
     //RESERVED KEYWORDS
@@ -25,6 +25,7 @@ typedef enum _Token_Type
     FLOAT,              // Float
     STR,                // String
     CHAR,               // Char
+    USING,              // using libname
     //REGULAR KEYWORDS
     ID,                 // forVariablesUse
     STRING,             // "THIS IS A STRING"

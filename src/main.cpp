@@ -18,33 +18,98 @@ int main(int argc, char** argv)
         perror("Error while Tokenizing file!!!");
         return -1;
     }
-
-    printf("Do you ");
     
-    try
-    {
-        ASM_List asm_list;
+    ASM_List asm_list;
         
-        assemble_tokens(asm_list, tokens);
-    }
-    catch(const std::exception& e)
+    if(!assemble_tokens(asm_list, tokens))
     {
-        std::cerr << e.what() << std::endl;
+        return -1;
     }
 
-    printf("even ");
-    /*
+    FILE* out = fopen("output.c", "w");
+
     for(int i = 0; i < asm_list.size();i++)
     {
-        printf("Enter here?");
-        printf("%d | ", asm_list[i].type);
-        for(int j = 0; j < asm_list[i].arguments.size(); j++)
+        switch(asm_list[i].type)
         {
-            printf("%s ", asm_list[i].arguments[j]);
+            case INCLUDE_LIBRARY:
+            {
+                if(asm_list[i].arguments[0] == "stdlib")
+                {
+                    fprintf(out, "#include <stdlib.h>\n#include <stdio.h>\n#include <string.h>\n");
+                    continue;
+                }
+                else
+                {
+                    fprintf(stderr, "UNKNOWN LIBRARY \"%s\"!!!", asm_list[i].arguments[0].c_str());
+                    return -1;
+                }
+            }
+            case FUNCTION:
+            {
+                fprintf(out, "int %s()\n", asm_list[i].arguments[0].c_str());
+                continue;
+            }
+            case OPEN_COLON:
+            {
+                fprintf(out, "{\n");
+                continue;
+            }
+
+            case CLOSE_COLON:
+            {
+                fprintf(out, "}\n");
+                continue;
+            }
+            
+            case ANY_VAR:
+            {
+                if(asm_list[i].arguments[0] == "Bool")
+                {
+                    fprintf(out, "bool %s = %s;\n", asm_list[i].arguments[1].c_str(), asm_list[i].arguments[2].c_str());
+                }
+
+                else if(asm_list[i].arguments[0] == "Int")
+                {
+                    fprintf(out, "int %s = %s;\n", asm_list[i].arguments[1].c_str(), asm_list[i].arguments[2].c_str());
+                }
+
+                else if(asm_list[i].arguments[0] == "Float")
+                {
+                    fprintf(out, "float %s = %s;\n", asm_list[i].arguments[1].c_str(), asm_list[i].arguments[2].c_str());
+                }
+
+                else if(asm_list[i].arguments[0] == "Char")
+                {
+                    fprintf(out, "char %s = %s;\n", asm_list[i].arguments[1].c_str(), asm_list[i].arguments[2].c_str());
+                }
+                continue;
+            }
+            case SET:
+            {
+                fprintf(out, "%s = %s;\n", asm_list[i].arguments[0].c_str(), asm_list[i].arguments[1].c_str());
+                continue;
+            }
+            case ADDITION:
+            {
+                fprintf(out, "%s += %s;\n", asm_list[i].arguments[0].c_str(), asm_list[i].arguments[1].c_str());
+                continue;
+            }
+            case FUNCTION_CALL:
+            {
+                fprintf(out, "%s(", asm_list[i].arguments[0].c_str());
+                for(int j = 1; j < asm_list[i].arguments.size(); i++)
+                {
+                    fprintf(out, "%s, ", asm_list[i].arguments[j]);
+                }
+                fprintf(out, ");");
+                continue;
+            }
         }
-        putc('\n', stdout);
     }
-    */
+
+    
+    fprintf(out, "}");
 
     return 0;
 }

@@ -1,8 +1,9 @@
-Int x = 10
-Int y = 30
+function main
+{
+    Int x = 0
+    Int y = 0
 
-Int c = 0
-c += x
-c += y
-
-; TODO: ADD COMMENTS ;
+    Float z = 0
+    z = x
+    z += y
+}

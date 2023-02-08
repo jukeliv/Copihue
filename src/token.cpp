@@ -22,6 +22,10 @@ Token_Type KEYWORD(std::string word)
     {
         return FUNC;
     }
+    else if(word == "using")
+    {
+        return USING;
+    }
     else if(word == "if" || word == "else")
     {
         return LOGIC_STATEMENT;

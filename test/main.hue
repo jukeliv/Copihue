@@ -1,9 +1,29 @@
-function main
-{
-    Int x = 0
-    Int y = 0
+using stdlib
 
-    Float z = 0
+Int x = 0
+Int y = 0
+
+Int z = 0
+
+func sum
+{
     z = x
     z += y
+}
+
+func main
+{
+    x = 20
+    y = 30
+    
+    @sum()
+    
+    if(x < 30)
+    {
+        @printf(z)
+    }
+    else
+    {
+        @printf(2)
+    }
 }

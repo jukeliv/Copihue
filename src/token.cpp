@@ -18,7 +18,7 @@ Token_Type KEYWORD(std::string word)
     {
         return CHAR;
     }
-    else if(word == "function")
+    else if(word == "func")
     {
         return FUNC;
     }
@@ -104,6 +104,10 @@ bool Tokenize(Token_List& list, std::string path)
 
         switch(sourceCode[i])
         {
+            case '!':
+                lex[0] = sourceCode[i++];
+                list.push_back(Token(lex, NEGATION));
+                break;
             case '>':
                 lex[0] = sourceCode[i++];
                 list.push_back(Token(lex, GREATERT));

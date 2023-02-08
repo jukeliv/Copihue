@@ -39,6 +39,7 @@ typedef enum _Token_Type
     COMMA,              // ,
     GREATERT,           // >
     LESST,              // <
+    NEGATION,           // !
     //CHAR OPERATORS
     PLUS,               // +
     MINUS,              // -

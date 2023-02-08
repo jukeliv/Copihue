@@ -27,7 +27,18 @@ int main(int argc, char** argv)
     }
 
     FILE* out = fopen("output.c", "w");
-
+    
+    /*
+    for(int i = 0; i < asm_list.size(); i++)
+    {
+        printf("%d | ", asm_list[i].type);
+        for(int j = 0; j < asm_list[i].arguments.size(); j++)
+        {
+            printf("%s ", asm_list[i].arguments[j].c_str());
+        }
+        putc('\n', stdout);
+    }
+    */
     for(int i = 0; i < asm_list.size();i++)
     {
         switch(asm_list[i].type)
@@ -98,18 +109,21 @@ int main(int argc, char** argv)
             case FUNCTION_CALL:
             {
                 fprintf(out, "%s(", asm_list[i].arguments[0].c_str());
-                for(int j = 1; j < asm_list[i].arguments.size(); i++)
+                for(int j = 1; j < asm_list[i].arguments.size(); j++)
                 {
-                    fprintf(out, "%s, ", asm_list[i].arguments[j]);
+                    if(j+1 < asm_list[i].arguments.size())
+                    {
+                        fprintf(out, "%s, ", asm_list[i].arguments[j].c_str());
+                    }
+                    else
+                    {
+                        fprintf(out, "%s", asm_list[i].arguments[j].c_str());
+                    }
                 }
-                fprintf(out, ");");
+                fprintf(out, ");\n");
                 continue;
             }
         }
     }
-
-    
-    fprintf(out, "}");
-
     return 0;
 }

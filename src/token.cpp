@@ -160,9 +160,14 @@ bool Tokenize(Token_List& list, std::string path)
                 if(lexi != 1 )
                     return -1;
 
+                case ';':
+                i++;
+                while(sourceCode[i] != ';')
+                    lex[lexi++] = sourceCode[i++];
+
                 lexi = 0;
                 i++;
-                list.push_back(Token(lex, CHAR));
+                list.push_back(Token(lex, COMMENT));
                 break;
             default:                                // HANDLE MULTIPLE-CHARACTER TOKENS
                 if(isdigit(sourceCode[i]))

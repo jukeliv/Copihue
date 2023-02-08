@@ -45,6 +45,8 @@ typedef enum _Token_Type
     DIV,                // /
     //STATEMENTS
     LOGIC_STATEMENT,    // if(something)  && else
+    //OTHER
+    COMMENT             //; YOUR COMMENT HERE ;
 }Token_Type;
 
 class Token

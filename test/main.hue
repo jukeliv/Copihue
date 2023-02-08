@@ -1,14 +1,8 @@
-function sum
-{
-    Int x = 10
-    Int y = 30
-    
-    Int c = 0
-    c += x
-    c += y
+Int x = 10
+Int y = 30
 
-    ret c
-}
+Int c = 0
+c += x
+c += y
 
-//Expected answer: 40
-@sum
+; TODO: ADD COMMENTS ;

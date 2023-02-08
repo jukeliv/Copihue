@@ -33,6 +33,12 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
     size_t i = 0;
     while(i < tokens.size())
     {
+        if(tokens[i].type == COMMENT)
+        {
+            //we don't need anything here lol, just skip it
+            i++;
+            continue;
+        }
         if(tokens[i].type ==  LOGIC_STATEMENT)
         {
             if(tokens[i].value == "if")

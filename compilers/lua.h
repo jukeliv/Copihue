@@ -77,16 +77,27 @@ void compile_lua(FILE*& out, ASM_List asm_list)
             }
             case OPERATION:
             {
-                fprintf(out, "%s %s= %s;\n", asm_list[i].arguments[0].c_str(), asm_list[i].arguments[1].c_str(), asm_list[i].arguments[2].c_str());
+                fprintf(out, "%s = %s %s %s;\n", asm_list[i].arguments[0].c_str(), asm_list[i].arguments[0].c_str(), asm_list[i].arguments[1].c_str(), asm_list[i].arguments[2].c_str());
                 continue;
             }
             case FUNCTION_CALL:
             {
-                fprintf(out, "%s(", asm_list[i].arguments[0].c_str());
-                for(int j = 1; j < asm_list[i].arguments.size(); j++)
-                    fprintf(out, "%s", asm_list[i].arguments[j].c_str());
-                
-                fprintf(out, ");\n");
+                if(asm_list[i].arguments[0] == "print")
+                {
+                    fprintf(out, "io.write(", asm_list[i].arguments[0].c_str());
+                    for(int j = 1; j < asm_list[i].arguments.size(); j++)
+                        fprintf(out, "%s", asm_list[i].arguments[j].c_str());
+                    
+                    fprintf(out, ")\n");
+                }
+                else
+                {
+                    fprintf(out, "%s(", asm_list[i].arguments[0].c_str());
+                    for(int j = 1; j < asm_list[i].arguments.size(); j++)
+                        fprintf(out, "%s", asm_list[i].arguments[j].c_str());
+                    
+                    fprintf(out, ");\n");
+                }
                 continue;
             }
             case STATEMENT:

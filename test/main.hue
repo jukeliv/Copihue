@@ -1,7 +1,5 @@
-;include libraries;
 using stdlib
 
-;entry point;
 func main
 {
     Int i = 0
@@ -9,6 +7,6 @@ func main
     while(i < 10)
     {
         @print(i)
-        i+=1
+        i += 1
     }
 }

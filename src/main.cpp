@@ -5,7 +5,7 @@
 #include <iostream>
 
 //INCLUDE COMPILERS HERE
-#include "../compilers/c.h"
+#include "../compilers/cpp.h"
 #include "../compilers/lua.h"
 
 int main(int argc, char** argv)
@@ -45,10 +45,10 @@ int main(int argc, char** argv)
     */
 
     //Adding support for multiple languages in the future!!!
-    if(strcmp(argv[1], "-c") == 0)
+    if(strcmp(argv[1], "-cpp") == 0)
     {
-        FILE* out = fopen("output.c", "w");
-        compile_c(out, asm_list);
+        FILE* out = fopen("output.cpp", "w");
+        compile_cpp(out, asm_list);
     }
     else if(strcmp(argv[1], "-lua") == 0)
     {

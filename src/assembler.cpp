@@ -79,6 +79,7 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             }
             if(tokens[i].value == "while")
             {
+                //LOL while loops are a copy of if statements XD
                 size_t len = assembler_statement_syntax_check(tokens, i);
 
                 if(len == 0){

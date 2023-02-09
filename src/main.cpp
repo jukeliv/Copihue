@@ -6,6 +6,7 @@
 
 //INCLUDE COMPILERS HERE
 #include "../compilers/c.h"
+#include "../compilers/lua.h"
 
 int main(int argc, char** argv)
 {
@@ -49,6 +50,12 @@ int main(int argc, char** argv)
         FILE* out = fopen("output.c", "w");
         compile_c(out, asm_list);
     }
+    else if(strcmp(argv[1], "-lua") == 0)
+    {
+        FILE* out = fopen("output.lua", "w");
+        compile_lua(out, asm_list);
+    }
+    
     else
     {
         fprintf(stderr, "UNKNOWN COMPILER!!!");

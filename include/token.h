@@ -8,8 +8,9 @@
 
 typedef enum _Token_Type
 {
-    //FUNCTIONS KEYWORDS
+    //KEYWORDS
     NONE,               // (dumb var that means `THIS IS NOT A RESERVED KEYWORD`)
+    MACRO,              // macro MACRO_NAME MACRO_VALUE
     /*
     MEMSET,             // memset(bank, variable, value) // SETS THE VALUE OF A MEMORY LOCATION
     MEMACC,             // memacc(53546, charPosition)  // SETS MEMORY TO A VARIABLE
@@ -23,12 +24,10 @@ typedef enum _Token_Type
     BOOL,               // Bool
     INT,                // Int
     FLOAT,              // Float
-    STR,                // String
-    CHAR,               // Char
+    STRING,             // String
     USING,              // using libname
     //REGULAR KEYWORDS
     ID,                 // forVariablesUse
-    STRING,             // "THIS IS A STRING"
     NUMERIC,            // 1, 2, 3, 4.... INFINITY
     //CHAR TYPES
     EQUALS,             // =

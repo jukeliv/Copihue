@@ -2,6 +2,10 @@
 
 Token_Type KEYWORD(std::string word)
 {
+    if(word == "macro")
+    {
+        return MACRO;
+    }
     if(word == "Bool")
     {
         return BOOL;
@@ -14,9 +18,9 @@ Token_Type KEYWORD(std::string word)
     {
         return FLOAT;
     }
-    else if(word == "Char")
+    else if(word == "String")
     {
-        return CHAR;
+        return STRING;
     }
     else if(word == "func")
     {
@@ -26,17 +30,13 @@ Token_Type KEYWORD(std::string word)
     {
         return USING;
     }
-    else if(word == "if" || word == "else")
+    else if(word == "if" || word == "else" || word == "while")
     {
         return LOGIC_STATEMENT;
     }
     else if(word == "true" || word == "false")
     {
         return BOOL;
-    }
-    else if(word == "Char")
-    {
-        return CHAR;
     }
     else
     {
@@ -48,11 +48,14 @@ bool isType(Token_Type t)
 {
     if(t == BOOL)
         return true;
+    
     else if(t == INT)
         return true;
+    
     else if(t == FLOAT)
         return true;
-    else if(t == CHAR)
+
+    else if(t == STRING)
         return true;
 
     return false;
@@ -68,12 +71,11 @@ bool isCorrectType(Token_Type tt, Token_Type token_t)
             return token_t == NUMERIC;
         case FLOAT:
             return token_t == NUMERIC;
-        case CHAR:
-            return token_t == CHAR;
+        case STRING:
+            return token_t == STRING;
         default:
             return false;
     }
-    return false;
 }
 
 /*
@@ -160,15 +162,20 @@ bool Tokenize(Token_List& list, std::string path)
                 lex[0] = sourceCode[i++];
                 list.push_back(Token(lex, FCALL));
                 break;
-            case '\'':
+            case '"':
                 i++;
-                while(sourceCode[i] != '\'')
-                    lex[lexi++] = sourceCode[i++];
-                
-                if(lexi != 1 )
-                    return -1;
 
-                case ';':
+                lex[lexi++] = '"';
+                while(sourceCode[i] != '"')
+                    lex[lexi++] = sourceCode[i++];
+                lex[lexi] = '"';
+
+                lexi = 0;
+                i++;
+                list.push_back(Token(lex, STRING));
+                break;
+
+            case ';':
                 i++;
                 while(sourceCode[i] != ';')
                     lex[lexi++] = sourceCode[i++];

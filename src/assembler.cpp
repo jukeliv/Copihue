@@ -1,9 +1,7 @@
 #include "../include/assembler.h"
 
-size_t assembler_if_syntax_check(Token_List ls, int index)
+size_t assembler_statement_syntax_check(Token_List ls, int index)
 {
-    //if(foo == 0)
-    //if(foo < 0)
     if(ls[index+1].type != OPEN_P || ls[index+2].type != ID)
     {
         fprintf(stderr, "Syntaxis Error!!!\n if statement 1");
@@ -38,24 +36,66 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             continue;
         }
 
+        if(tokens[i].type == MACRO)
+        {
+            //macro MACRO_NAME MACRO_VALUE
+            i++;
+
+            if(tokens[i].type != ID)
+            {
+                fprintf(stderr, "Syntax Error!!!\n Macro check\n");
+                return false;
+            }
+            asms.push_back(ASM({}, MACRO_DEFINITION));
+            asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+            asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+            
+            continue;
+        }
+
         if(tokens[i].type ==  LOGIC_STATEMENT)
         {
             if(tokens[i].value == "if")
             {
-                size_t len = assembler_if_syntax_check(tokens, i);
+                size_t len = assembler_statement_syntax_check(tokens, i);
 
                 if(len == 0){
                     fprintf(stderr, "Syntax Error!!!\n if statement\n");
                     return false;
                 }
 
-                    asms.push_back(ASM({}, STATEMENT));
-                    asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+                asms.push_back(ASM({}, STATEMENT));
+                asms[asms.size()-1].arguments.push_back(tokens[i++].value);
                     
-                    i++;
-
-                while(i < len)
+                i++;
+                
+                size_t lenR = i + len - 1;
+                while(i < lenR)
                     asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+                
+                i++;
+
+                continue;
+            }
+            if(tokens[i].value == "while")
+            {
+                size_t len = assembler_statement_syntax_check(tokens, i);
+
+                if(len == 0){
+                    fprintf(stderr, "Syntax Error!!!\n while loop\n");
+                    return false;
+                }
+
+                asms.push_back(ASM({}, STATEMENT));
+                asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+                    
+                i++;
+        
+                size_t lenR = i + len - 1;
+                while(i < lenR)
+                    asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+                
+                i++;
                 
                 continue;
             }
@@ -74,18 +114,26 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
 
         if(tokens[i].type == ID)
         {
-            if(tokens[i+1].type == PLUS)
+            //foo += 2 | foo -= 2 | foo /= 2 | foo *= 2
+            if(tokens[i+1].type == PLUS || tokens[i+1].type == MINUS || tokens[i+1].type == DIV || tokens[i+1].type == MULT)
             {
-                asms.push_back(ASM({}, ADDITION));
+                if(tokens[i+2].type != EQUALS)
+                {
+                    fprintf(stderr, "Syntax Error!!!\nOPERATION\n");
+                    return false;
+                }
+
+                asms.push_back(ASM({}, OPERATION));
                 asms[asms.size()-1].arguments.push_back(tokens[i].value);
+                asms[asms.size()-1].arguments.push_back(tokens[i+1].value);
                 asms[asms.size()-1].arguments.push_back(tokens[i+3].value);
-                i+=3;
+                i+=4;
                 continue;
             }
 
+            //foo = 2
             if(tokens[i+1].type == EQUALS)
             {
-                //X = 1
                 asms.push_back(ASM({}, SET));
                 asms[asms.size()-1].arguments.push_back(tokens[i].value);
                 asms[asms.size()-1].arguments.push_back(tokens[i+2].value);
@@ -131,13 +179,11 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             asms.push_back(ASM({}, FUNCTION_CALL));
             asms[asms.size()-1].arguments.push_back(tokens[i].value);
             i+=2;
-
-            size_t j = i;
             
-            while(tokens[j].type != CLOSE_P)
-                asms[asms.size()-1].arguments.push_back(tokens[j++].value);
+            while(tokens[i].type != CLOSE_P)
+                asms[asms.size()-1].arguments.push_back(tokens[i++].value);
 
-            i+=(j-i)+1;
+            i++;
 
             continue;
         }

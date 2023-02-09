@@ -1,29 +1,14 @@
+;include libraries;
 using stdlib
 
-Int x = 0
-Int y = 0
-
-Int z = 0
-
-func sum
-{
-    z = x
-    z += y
-}
-
+;entry point;
 func main
 {
-    x = 20
-    y = 30
-    
-    @sum()
-    
-    if(x < 30)
+    Int i = 0
+
+    while(i < 10)
     {
-        @printf(z)
-    }
-    else
-    {
-        @printf(2)
+        @printf("%i\n", i)
+        i+=1
     }
 }

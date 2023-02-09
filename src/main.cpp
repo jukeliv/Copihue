@@ -4,16 +4,20 @@
 #include "../include/assembler.h"
 #include <iostream>
 
+//INCLUDE COMPILERS HERE
+#include "../compilers/c.h"
+
 int main(int argc, char** argv)
 {
-    if(argc < 2)
+    //Copihue -compiler- -file_name- 
+    if(argc < 3)
     {
         fprintf(stderr, "Not enough arguments\n");
         return -1;
     }
 
     Token_List tokens;
-    if(!Tokenize(tokens, argv[1]))
+    if(!Tokenize(tokens, argv[2]))
     {
         perror("Error while Tokenizing file!!!");
         return -1;
@@ -25,10 +29,9 @@ int main(int argc, char** argv)
     {
         return -1;
     }
-
-    FILE* out = fopen("output.c", "w");
     
     /*
+    DEBUG SHIT
     for(int i = 0; i < asm_list.size(); i++)
     {
         printf("%d | ", asm_list[i].type);
@@ -39,91 +42,18 @@ int main(int argc, char** argv)
         putc('\n', stdout);
     }
     */
-    for(int i = 0; i < asm_list.size();i++)
+
+    //Adding support for multiple languages in the future!!!
+    if(strcmp(argv[1], "-c") == 0)
     {
-        switch(asm_list[i].type)
-        {
-            case INCLUDE_LIBRARY:
-            {
-                if(asm_list[i].arguments[0] == "stdlib")
-                {
-                    fprintf(out, "#include <stdlib.h>\n#include <stdio.h>\n#include <string.h>\n");
-                    continue;
-                }
-                else
-                {
-                    fprintf(stderr, "UNKNOWN LIBRARY \"%s\"!!!", asm_list[i].arguments[0].c_str());
-                    return -1;
-                }
-            }
-            case FUNCTION:
-            {
-                fprintf(out, "int %s()\n", asm_list[i].arguments[0].c_str());
-                continue;
-            }
-            case OPEN_COLON:
-            {
-                fprintf(out, "{\n");
-                continue;
-            }
-
-            case CLOSE_COLON:
-            {
-                fprintf(out, "}\n");
-                continue;
-            }
-            
-            case ANY_VAR:
-            {
-                if(asm_list[i].arguments[0] == "Bool")
-                {
-                    fprintf(out, "bool %s = %s;\n", asm_list[i].arguments[1].c_str(), asm_list[i].arguments[2].c_str());
-                }
-
-                else if(asm_list[i].arguments[0] == "Int")
-                {
-                    fprintf(out, "int %s = %s;\n", asm_list[i].arguments[1].c_str(), asm_list[i].arguments[2].c_str());
-                }
-
-                else if(asm_list[i].arguments[0] == "Float")
-                {
-                    fprintf(out, "float %s = %s;\n", asm_list[i].arguments[1].c_str(), asm_list[i].arguments[2].c_str());
-                }
-
-                else if(asm_list[i].arguments[0] == "Char")
-                {
-                    fprintf(out, "char %s = %s;\n", asm_list[i].arguments[1].c_str(), asm_list[i].arguments[2].c_str());
-                }
-                continue;
-            }
-            case SET:
-            {
-                fprintf(out, "%s = %s;\n", asm_list[i].arguments[0].c_str(), asm_list[i].arguments[1].c_str());
-                continue;
-            }
-            case ADDITION:
-            {
-                fprintf(out, "%s += %s;\n", asm_list[i].arguments[0].c_str(), asm_list[i].arguments[1].c_str());
-                continue;
-            }
-            case FUNCTION_CALL:
-            {
-                fprintf(out, "%s(", asm_list[i].arguments[0].c_str());
-                for(int j = 1; j < asm_list[i].arguments.size(); j++)
-                {
-                    if(j+1 < asm_list[i].arguments.size())
-                    {
-                        fprintf(out, "%s, ", asm_list[i].arguments[j].c_str());
-                    }
-                    else
-                    {
-                        fprintf(out, "%s", asm_list[i].arguments[j].c_str());
-                    }
-                }
-                fprintf(out, ");\n");
-                continue;
-            }
-        }
+        FILE* out = fopen("output.c", "w");
+        compile_c(out, asm_list);
     }
+    else
+    {
+        fprintf(stderr, "UNKNOWN COMPILER!!!");
+        return -1;
+    }
+    
     return 0;
 }

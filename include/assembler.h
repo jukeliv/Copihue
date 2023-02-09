@@ -1,3 +1,5 @@
+#pragma once
+
 #include "token.h"
 #include "utility.h"
 #include <string>
@@ -6,7 +8,7 @@
 typedef enum _ASM_Type
 {
     IF,
-    ADDITION,
+    OPERATION,
     SET,
     FUNCTION,
     FUNCTION_CALL,
@@ -14,7 +16,8 @@ typedef enum _ASM_Type
     CLOSE_COLON,
     ANY_VAR,
     STATEMENT,
-    INCLUDE_LIBRARY
+    INCLUDE_LIBRARY,
+    MACRO_DEFINITION
 }ASM_Type;
 
 class ASM

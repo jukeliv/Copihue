@@ -8,7 +8,7 @@
  - ✅ If statements
  - 🚧 Comparison operators (==, !=, >, <, >=, <=)
  - ✅ Arithmetic operators (+, -, *, /)
- - ❌ Logical operators (&&, ||, !)
+ - 🚧 Logical operators (&&, ||, !) ( only have the not operator and is not implemented in code yet )
  - ✅ Comments
  - 🚧 For and while loops ( only while loops )
  - ❌ Structs

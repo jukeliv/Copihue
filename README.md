@@ -8,7 +8,6 @@
  - ✅ If statements
  - 🚧 Comparison operators (==, !=, >, <, >=, <=)
  - ✅ Arithmetic operators (+, -, *, /)
- - ❌ Bitwise operators (&, |, ^, ~, <<, >>)
  - ❌ Logical operators (&&, ||, !)
  - ✅ Comments
  - 🚧 For and while loops ( only while loops )
@@ -16,4 +15,3 @@
  - ❌ Include files
  - ✅ Strings
  - ❌ Arrays
- - ❌ Classes

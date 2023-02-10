@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
+#include <vector>
 int main(void)
 {
-int i = 0;
-while(i<10)
+int index = 0;
+while(index<1000)
 {
-std::cout<<i<<std::endl;
-i += 1;
+std::cout<<"Hello World"<<std::endl;
+index += 1;
+std::cout<<index<<std::endl;
 }
 }

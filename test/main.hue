@@ -2,11 +2,12 @@ using stdlib
 
 func main
 {
-    Int i = 0
+    Int index = 0
 
-    while(i < 10)
+    while(index<1000)
     {
-        @print(i)
-        i += 1
+        @print("Hello World")
+        index+=1
+        @print(index)
     }
 }

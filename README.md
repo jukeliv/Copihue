@@ -14,4 +14,4 @@
  - ❌ Structs
  - ❌ Include files
  - ✅ Strings
- - ❌ Arrays
+ - 🚧 Arrays ( can't access to data inside the array and `String[]` doesn't work, it ruins other Arrays)

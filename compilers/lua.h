@@ -37,7 +37,7 @@ void compile_lua(FILE*& out, ASM_List asm_list)
                 fprintf(out, "function %s() ", asm_list[i].arguments[0].c_str());
                 continue;
             }
-            case OPEN_COLON:
+            case OPEN_BRACKET:
             {
                 switch(asm_list[i-1].type)
                 {
@@ -51,7 +51,7 @@ void compile_lua(FILE*& out, ASM_List asm_list)
                 continue;
             }
 
-            case CLOSE_COLON:
+            case CLOSE_BRACKET:
             {
                 switch(asm_list[i-1].type)
                 {

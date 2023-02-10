@@ -25,6 +25,7 @@ typedef enum _Token_Type
     INT,                // Int
     FLOAT,              // Float
     STRING,             // String
+    ARRAY,               // ["This is", "An", "String", "Array"]
     USING,              // using libname
     //REGULAR KEYWORDS
     ID,                 // forVariablesUse
@@ -33,8 +34,8 @@ typedef enum _Token_Type
     EQUALS,             // =
     OPEN_P,             // (
     CLOSE_P,            // )
-    OPEN_C,             // {
-    CLOSE_C,            // }
+    OPEN_B,             // {
+    CLOSE_B,            // }
     COMMA,              // ,
     GREATERT,           // >
     LESST,              // <

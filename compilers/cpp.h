@@ -6,6 +6,7 @@ void compile_cpp(FILE*& out, ASM_List asm_list)
 {
     for(int i = 0; i < asm_list.size();i++)
     {
+        //TODO: add a map for variables and functions and check that they are set before you can call them :)
         switch(asm_list[i].type)
         {
             case MACRO_DEFINITION:
@@ -17,7 +18,7 @@ void compile_cpp(FILE*& out, ASM_List asm_list)
             {
                 if(asm_list[i].arguments[0] == "stdlib")
                 {
-                    fprintf(out, "#include <iostream>\n#include <string>\n");
+                    fprintf(out, "#include <iostream>\n#include <string>\n#include <vector>\n");
                     continue;
                 }
                 else
@@ -33,18 +34,44 @@ void compile_cpp(FILE*& out, ASM_List asm_list)
                 fprintf(out, "int %s(void)\n", asm_list[i].arguments[0].c_str());
                 continue;
             }
-            case OPEN_COLON:
+            case OPEN_BRACKET:
             {
                 fprintf(out, "{\n");
                 continue;
             }
 
-            case CLOSE_COLON:
+            case CLOSE_BRACKET:
             {
                 fprintf(out, "}\n");
                 continue;
             }
-            
+            case ANY_ARRAY:
+            {
+                std::string type;
+                if(asm_list[i].arguments[0] == "Bool")
+                    type = "bool";
+
+                else if(asm_list[i].arguments[0] == "Int")
+                    type = "int";
+
+                else if(asm_list[i].arguments[0] == "Float")
+                    type = "float";
+
+                else if(asm_list[i].arguments[0] == "String")
+                    type = "std::string";
+
+                fprintf(out, "std::vector<%s> %s = {", type.c_str(), asm_list[i].arguments[1].c_str());
+
+                for(int j = 2; j < asm_list[i].arguments.size(); j++)
+                {
+                    if(j+1 != asm_list[i].arguments.size())
+                        fprintf(out, "%s,", asm_list[i].arguments[j].c_str());
+                    else
+                        fprintf(out, "%s", asm_list[i].arguments[j].c_str());
+                }
+                fprintf(out, "};\n");
+                continue;
+            }
             case ANY_VAR:
             {
                 if(asm_list[i].arguments[0] == "Bool")
@@ -95,6 +122,10 @@ void compile_cpp(FILE*& out, ASM_List asm_list)
                     
                     fprintf(out, "<<std::endl;\n");
                 }
+                else if(asm_list[i].arguments[0] == "ex")
+                {
+                    fprintf(out, "exit(%s);\n", asm_list[i].arguments[1].c_str());
+                }
                 else
                 {
                     fprintf(out, "%s(", asm_list[i].arguments[0].c_str());
@@ -106,17 +137,24 @@ void compile_cpp(FILE*& out, ASM_List asm_list)
                 continue;
             }
             case STATEMENT:
+            {
                 if(asm_list[i].arguments[0] == "else")
                     fprintf(out, "else\n");
                 else
                 {
-                    fprintf(out, "%s(", asm_list[i].arguments[0].c_str());
+                    if(asm_list[i].arguments[0] != "elif")
+                        fprintf(out, "%s(", asm_list[i].arguments[0].c_str());
+                    else
+                        fprintf(out, "else if(");
+
                     for(int j = 1; j < asm_list[i].arguments.size(); j++)
                     {
                         fprintf(out, "%s", asm_list[i].arguments[j].c_str());
                     }
                     fprintf(out, ")\n");
                 }
+                continue;
+            }
         }
     }
 }

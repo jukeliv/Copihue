@@ -30,7 +30,7 @@ Token_Type KEYWORD(std::string word)
     {
         return USING;
     }
-    else if(word == "if" || word == "else" || word == "while")
+    else if(word == "if" || word == "else" || word == "elif" || word == "while")
     {
         return LOGIC_STATEMENT;
     }
@@ -128,11 +128,11 @@ bool Tokenize(Token_List& list, std::string path)
                 break;
             case '{':
                 lex[0] = sourceCode[i++];
-                list.push_back(Token(lex, OPEN_C));
+                list.push_back(Token(lex, OPEN_B));
                 break;
             case '}':
                 lex[0] = sourceCode[i++];
-                list.push_back(Token(lex, CLOSE_C));
+                list.push_back(Token(lex, CLOSE_B));
                 break;
             case ',':
                 lex[0] = sourceCode[i++];
@@ -166,24 +166,55 @@ bool Tokenize(Token_List& list, std::string path)
                 i++;
 
                 lex[lexi++] = '"';
+
                 while(sourceCode[i] != '"')
                     lex[lexi++] = sourceCode[i++];
+                
                 lex[lexi] = '"';
 
                 lexi = 0;
-                i++;
+                
                 list.push_back(Token(lex, STRING));
+
+                i++;
                 break;
 
-            case ';':
+            case '#':
                 i++;
-                while(sourceCode[i] != ';')
+
+                while(sourceCode[i] != '#')
                     lex[lexi++] = sourceCode[i++];
+                
+                i++;
 
                 lexi = 0;
-                i++;
+
                 list.push_back(Token(lex, COMMENT));
+
                 break;
+            
+            case '[':
+                //[0, 1, 2]
+                i++;
+
+                while(sourceCode[i] != ']')
+                {
+                    if(sourceCode[i] == ' ')
+                    {
+                        i++;
+                        continue;
+                    }
+                    lex[lexi++] = sourceCode[i++];
+                }
+                
+                i++;
+
+                lexi = 0;
+                
+                list.push_back(Token(lex, ARRAY));
+
+                break;
+
             default:                                // HANDLE MULTIPLE-CHARACTER TOKENS
                 if(isdigit(sourceCode[i]))
                 {
@@ -192,6 +223,7 @@ bool Tokenize(Token_List& list, std::string path)
 
                     list.push_back(Token(lex, NUMERIC));
                     lexi = 0;
+                    i++;
                     continue;
                 }
                 else if(isalpha(sourceCode[i]))
@@ -206,11 +238,12 @@ bool Tokenize(Token_List& list, std::string path)
                         list.push_back(Token(lex, tt));
 
                     lexi = 0;
+
                     continue;
                 }
                 else if(sourceCode[i] != '\0') // I replace this cuz it had conflicts with the comments
                 {
-                    fprintf(stderr, "Unknown character found in Cuild file:\n character:\"%c\", line:%i\n", sourceCode[i], i);
+                    fprintf(stderr, "Unknown character found in file:\n c:\"%c\", i:%i\n", sourceCode[i], i);
                     i++;
                 }
                 break;

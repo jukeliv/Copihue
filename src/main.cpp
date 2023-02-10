@@ -10,7 +10,8 @@
 
 int main(int argc, char** argv)
 {
-    //Copihue -compiler- -file_name- 
+    //TODO: Implement an arguments system for the compiler
+    //Copihue -compiler- -file_name- -arguments-
     if(argc < 3)
     {
         fprintf(stderr, "Not enough arguments\n");
@@ -23,7 +24,7 @@ int main(int argc, char** argv)
         perror("Error while Tokenizing file!!!");
         return -1;
     }
-    
+
     ASM_List asm_list;
         
     if(!assemble_tokens(asm_list, tokens))
@@ -32,7 +33,7 @@ int main(int argc, char** argv)
     }
     
     /*
-    DEBUG SHIT
+    //DEBUG SHIT
     for(int i = 0; i < asm_list.size(); i++)
     {
         printf("%d | ", asm_list[i].type);
@@ -61,6 +62,7 @@ int main(int argc, char** argv)
         fprintf(stderr, "UNKNOWN COMPILER!!!");
         return -1;
     }
+    //*/
     
     return 0;
 }

@@ -1,13 +1,44 @@
-using stdlib
+!lc "#include <iostream>"
 
-func main
+Num value = 0
+
+func fibonacci(pass Num n):Void
 {
-    Int index = 0
-
-    while(index<1000)
+    #
+        value is a simple fix to the main problem of Copihue.
+        It is that variables has no return value, and even if they had,
+        you can't set the value of a variable to the output of a function
+    #
+    if(n == 0)
     {
-        @print("Hello World")
-        index+=1
-        @print(index)
+        value += 0
+    }
+    elif(n == 1)
+    {
+        value += 1
+    }
+    else
+    {
+        Num temp = 0
+        temp = n
+        temp-=1
+
+        @fibonacci(temp)
+        
+        temp-=1
+        
+        @fibonacci(temp)
+    }
+}
+
+func main():Void
+{
+    Num i = 1
+    while(i < 10)
+    {
+        @fibonacci(i)
+        @print(value)
+        value = 0
+        i+=1
     }
 }

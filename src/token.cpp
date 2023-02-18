@@ -2,21 +2,13 @@
 
 Token_Type KEYWORD(std::string word)
 {
-    if(word == "macro")
-    {
-        return MACRO;
-    }
     if(word == "Bool")
     {
         return BOOL;
     }
-    else if(word == "Int")
+    else if(word == "Num")
     {
-        return INT;
-    }
-    else if(word == "Float")
-    {
-        return FLOAT;
+        return NUMBER;
     }
     else if(word == "String")
     {
@@ -26,7 +18,7 @@ Token_Type KEYWORD(std::string word)
     {
         return FUNC;
     }
-    else if(word == "using")
+    else if(word == "import")
     {
         return USING;
     }
@@ -48,13 +40,8 @@ bool isType(Token_Type t)
 {
     if(t == BOOL)
         return true;
-    
-    else if(t == INT)
+    else if(t == NUMBER)
         return true;
-    
-    else if(t == FLOAT)
-        return true;
-
     else if(t == STRING)
         return true;
 
@@ -67,9 +54,7 @@ bool isCorrectType(Token_Type tt, Token_Type token_t)
     {
         case BOOL:
             return token_t == BOOL;
-        case INT:
-            return token_t == NUMERIC;
-        case FLOAT:
+        case NUMBER:
             return token_t == NUMERIC;
         case STRING:
             return token_t == STRING;
@@ -109,6 +94,10 @@ bool Tokenize(Token_List& list, std::string path)
             case '!':
                 lex[0] = sourceCode[i++];
                 list.push_back(Token(lex, NEGATION));
+                break;
+            case ':':
+                lex[0] = sourceCode[i++];
+                list.push_back(Token(lex, COLON));
                 break;
             case '>':
                 lex[0] = sourceCode[i++];
@@ -193,28 +182,6 @@ bool Tokenize(Token_List& list, std::string path)
 
                 break;
             
-            case '[':
-                //[0, 1, 2]
-                i++;
-
-                while(sourceCode[i] != ']')
-                {
-                    if(sourceCode[i] == ' ')
-                    {
-                        i++;
-                        continue;
-                    }
-                    lex[lexi++] = sourceCode[i++];
-                }
-                
-                i++;
-
-                lexi = 0;
-                
-                list.push_back(Token(lex, ARRAY));
-
-                break;
-
             default:                                // HANDLE MULTIPLE-CHARACTER TOKENS
                 if(isdigit(sourceCode[i]))
                 {

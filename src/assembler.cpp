@@ -2,24 +2,37 @@
 
 size_t assembler_statement_syntax_check(Token_List ls, int index)
 {
-    if(ls[index+1].type != OPEN_P || ls[index+2].type != ID)
+    if(ls[index+2].type != ID)
     {
-        fprintf(stderr, "Syntaxis Error!!!\n if statement 1");
+        fprintf(stderr, "Syntaxis Error!!!\n logic statement 1\n");
         return 0;
     }
+    if(ls[index+1].type != OPEN_P)
+    {
+        fprintf(stderr, "Syntaxis Error!!!\n logic statement 2\n");
+        return 0;
+    }
+
     if(ls[index+3].type == GREATERT || ls[index+3].type == LESST)
-        if(isType(ls[index+4].type) || ls[index+4].type == NUMERIC)
+        if(isType(ls[index+4].type) || ls[index+4].type == NUMERIC || ls[index+4].type == ID)
             return 4;
     
-    if(isType(ls[index+5].type) || ls[index+5].type == NUMERIC)
+    if(isType(ls[index+5].type) || ls[index+5].type == NUMERIC || ls[index+5].type == ID)
             return 5;
             
     if(ls[index+3].type == EQUALS && ls[index+4].type == EQUALS)
         return 5;
 
+    if(ls[index+3].type == GREATERT && ls[index+4].type == EQUALS)
+        return 5;
+
+    if(ls[index+3].type == LESST && ls[index+4].type == EQUALS)
+        return 5;
+
     if(ls[index+3].type == NEGATION && ls[index+4].type == EQUALS)
         return 5;
 
+    fprintf(stderr, "Syntaxis Error!!!\n logic statement 3\n");
     return 0;
 }
 
@@ -35,35 +48,6 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             continue;
         }
 
-        if(tokens[i].type == MACRO)
-        {
-            //TODO: save the macro command onto a map of macros and every time you call it, you just compile that code
-            // Also add a "macro calling" token
-            //macro MACRO_NAME {MACRO_VALUE}
-            i++;
-
-            if(tokens[i].type != ID)
-            {
-                fprintf(stderr, "Syntax Error!!!\n Macro check\n");
-                return false;
-            }
-
-            if(tokens[i+1].type != OPEN_B)
-            {
-                fprintf(stderr, "Syntax Error!!!\n Macro check 1\n");
-                return false;
-            }
-
-            asms.push_back(ASM({}, MACRO_DEFINITION));
-            asms[asms.size()-1].arguments.push_back(tokens[i++].value);
-            i++;
-
-            while(tokens[i].type != CLOSE_B)
-                asms[asms.size()-1].arguments.push_back(tokens[i++].value);
-            
-            continue;
-        }
-
         if(tokens[i].type ==  LOGIC_STATEMENT)
         {
             //if(Foo == 2)
@@ -72,7 +56,7 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
                 size_t len = assembler_statement_syntax_check(tokens, i);
 
                 if(len == 0){
-                    fprintf(stderr, "Syntax Error!!!\n if statement\n");
+                    fprintf(stderr, "%s statement\n", tokens[i].value.c_str());
                     return false;
                 }
 
@@ -85,10 +69,7 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
                 while(i < lenR)
                     asms[asms.size()-1].arguments.push_back(tokens[i++].value);
                 
-                //Strange error with the while loop thing messing around with Colons
-                if(tokens[lenR-len-1].value != "while")
-                    i++;
-
+                //Strange error with the while loop thing messing around with Brackets
                 continue;
             }
             else if (tokens[i].value == "else")
@@ -137,14 +118,64 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
 
         if(tokens[i].type == FUNC)
         {
-            //func FUNCTION_NAME
+            //func FUNCTION_NAME(pass Num arg, ref String arg2):ReturnType
             i++;
             if(tokens[i].type != ID)
             {
-                fprintf(stderr, "Syntax Error!!!\n using library\n");
+                fprintf(stderr, "Syntax Error!!!\n function declaration\n");
                 return false;
             }
+            
             asms.push_back(ASM({}, FUNCTION));
+            asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+            i++;
+            if(tokens[i].type == CLOSE_P)
+            {
+                i++;
+            }
+            else{
+                while(tokens[i].type != CLOSE_P)
+                {
+                    if(tokens[i].type == COMMA)
+                    {
+                        i++;
+                        continue;
+                    }
+                    if(tokens[i].value != "ref" && tokens[i].value != "pass")
+                    {
+                        fprintf(stderr, "Syntax Error!!!\nUnknown variable pass type!!!\n %d : %s\n", tokens[i].type, tokens[i].value.c_str());
+                        return false;
+                    }
+                    if(!isType(tokens[i+1].type))
+                    {
+                        fprintf(stderr, "Syntax Error!!!\nYou have not defined a variable type!!!\n %d : %s\n", tokens[i].type, tokens[i].value.c_str());
+                        return false;
+                    }
+                    if(tokens[i+2].type != ID)
+                    {
+                        fprintf(stderr, "Syntax Error!!!\nCan't have non-variable arguments!!!\n %d : %s\n", tokens[i+1].type, tokens[i+1].value.c_str());
+                        return false;
+                    }
+                    
+                    asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+                    asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+                    asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+                }
+                i++;
+            }
+
+            if(tokens[i].type != COLON)
+            {
+                fprintf(stderr, "Syntax Error!!!\n function return type\n %d : %s", tokens[i].type, tokens[i].value.c_str());
+                return false;
+            }
+            if(!isType(tokens[i+1].type) && tokens[i+1].value != "Void")
+            {
+                fprintf(stderr, "Syntax Error!!!\n function return type 2\n %d : %s", tokens[i+1].type, tokens[i+1].value.c_str());
+                return false;
+            }
+
+            i++;
             asms[asms.size()-1].arguments.push_back(tokens[i++].value);
             continue;
         }
@@ -166,14 +197,52 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             }
 
             asms.push_back(ASM({}, FUNCTION_CALL));
-            asms[asms.size()-1].arguments.push_back(tokens[i].value);
-            i+=2;
-            
+            asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+            i++;
+
             while(tokens[i].type != CLOSE_P)
+            {
+                if(tokens[i].type == COMMA)
+                {
+                    i++;
+                    continue;
+                }
+                if(tokens[i].type != ID)
+                {
+                    fprintf(stderr, "Syntax Error!!!\nCan't have non-variable arguments!!!\n %d : %s\n", tokens[i+1].type, tokens[i+1].value.c_str());
+                    return false;
+                }
                 asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+            }
 
             i++;
 
+            continue;
+        }
+
+        if(tokens[i].type == NEGATION)
+        {
+            /*
+                cp: extra parameter to the compiler
+                cc: sets C++ compiler
+                lc: language call
+            */
+            //!ct"-O3"
+            i++;
+            if(tokens[i+1].type != STRING)
+            {
+                fprintf(stderr, "Syntax Error!!!\n Compiler Declaration\n");
+                return false;
+            }
+            if(tokens[i].value != "cp" && tokens[i].value != "cc" && tokens[i].value != "lc")
+            {
+                fprintf(stderr, "Syntax Error!!!\n Unknown Compiler Declaration\n");
+                return false;
+            }
+            
+            asms.push_back(ASM({}, COMPILER_DECL));
+            asms[asms.size()-1].arguments.push_back(tokens[i++].value);
+            asms[asms.size()-1].arguments.push_back(tokens[i++].value);
             continue;
         }
 
@@ -205,82 +274,9 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             continue;
         }
 
-        if (isType(tokens[i].type) && tokens[i+1].type == ARRAY)
+        if(isType(tokens[i].type))
         {
-            //CHECK ARRAY
-            //Float[] Foo = [1.0, 2.0, 3.0]
-            
-            if(tokens[i+2].type != ID)
-            {
-                fprintf(stderr, "Syntax Error!!!\n Array Check ID\n%d : %s\n", tokens[i+1].type, tokens[i+1].value.c_str());
-                return false;
-            }
-
-            if(tokens[i+3].type != EQUALS)
-            {
-                fprintf(stderr, "Syntax Error!!!\n Variable Check EQUALS\n");
-                return false;
-            }
-
-            if(!tokens[i+1].value.empty())
-            {
-                fprintf(stderr, "Syntax Error!!!\n Wrong Array Initialization\n");
-                return false;
-            }
-
-            asms.push_back(ASM({}, ANY_ARRAY));
-
-            asms[asms.size()-1].arguments.push_back(tokens[i].value);
-            asms[asms.size()-1].arguments.push_back(tokens[i+2].value);
-            
-            //stupid fix lol
-            char buf[256];
-            int buf_i = 0;
-            
-            int j = 0;
-
-            for(int j = 0; j < tokens[i+4].value.size(); j++)
-            {
-                if(tokens[i+4].value[j] == ',') //TODO: Add type checking
-                {
-                    //Hacky fix for floating values
-                    if(tokens[i].type == FLOAT)
-                    {
-                        buf[buf_i] = 'f';
-                    }
-
-                    buf_i = 0;
-                    
-                    /*
-                    TODO: Re write the entire Array system :)
-                    //UNSTABLE CODE!!!//
-                    Token_Type tt = KEYWORD(buf);
-                    if(!isCorrectType(tokens[i].type, tt))
-                    {
-                        fprintf(stderr, "Logic Error!!!\n Wrong Array Type\n");
-                        return false;
-                    }
-                    */
-
-                    asms[asms.size()-1].arguments.push_back(buf);
-
-                    memset(buf, 0, 256);
-                    
-                    continue;
-                }
-                buf[buf_i++] = tokens[i+4].value[j];
-            }
-            
-            asms[asms.size()-1].arguments.push_back(buf);
-            memset(buf, 0, 256);
-
-            i+=5;
-            continue;
-        }
-
-        else if(isType(tokens[i].type))
-        {
-            //Float foo = 10.0
+            //Num foo = 10.0
             if(tokens[i+1].type != ID)
             {
                 fprintf(stderr, "Syntax Error!!!\n Variable Check ID\n%d : %s\n", tokens[i+1].type, tokens[i+1].value.c_str());
@@ -301,8 +297,8 @@ bool assemble_tokens(ASM_List& asms, const Token_List& tokens)
             }
 
             asms.push_back(ASM({}, ANY_VAR));
-
             asms[asms.size()-1].arguments.push_back(tokens[i].value);
+
             asms[asms.size()-1].arguments.push_back(tokens[i+1].value);
             asms[asms.size()-1].arguments.push_back(tokens[i+3].value);
             

@@ -15,11 +15,9 @@ typedef enum _ASM_Type
     OPEN_BRACKET,
     CLOSE_BRACKET,
     ANY_VAR,
-    ANY_ARRAY,
-    GET_ARRAY,
     STATEMENT,
     INCLUDE_LIBRARY,
-    MACRO_DEFINITION
+    COMPILER_DECL
 }ASM_Type;
 
 class ASM

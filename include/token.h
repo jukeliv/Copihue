@@ -10,26 +10,23 @@ typedef enum _Token_Type
 {
     //KEYWORDS
     NONE,               // (dumb var that means `THIS IS NOT A RESERVED KEYWORD`)
-    MACRO,              // macro MACRO_NAME MACRO_VALUE
+    RETURN,             // ret RETURN_VALUE
     /*
     MEMSET,             // memset(bank, variable, value) // SETS THE VALUE OF A MEMORY LOCATION
     MEMACC,             // memacc(53546, charPosition)  // SETS MEMORY TO A VARIABLE
     */
     //FUNCTIONS
-    FUNC,               // function
-    FCALL,              // @FUNC_NAME
+    FUNC,               // func FUNC_NAME
+    FCALL,              // @FUNC_NAME(ARGS1,ARGS2)
     //RESERVED KEYWORDS
-    ANY,                //BOOL, INT, FLOAT, STR
-    NOT,                // not
+    ANY,                //BOOL, Num, STR
     BOOL,               // Bool
-    INT,                // Int
-    FLOAT,              // Float
-    STRING,             // String
-    ARRAY,               // ["This is", "An", "String", "Array"]
-    USING,              // using libname
+    NUMBER,              // Mum
+    STRING,
+    USING,              // import libname
     //REGULAR KEYWORDS
     ID,                 // forVariablesUse
-    NUMERIC,            // 1, 2, 3, 4.... INFINITY
+    NUMERIC,            // 1, 2, 3, 4.... POSITIVE_INFINITY
     //CHAR TYPES
     EQUALS,             // =
     OPEN_P,             // (
@@ -40,13 +37,14 @@ typedef enum _Token_Type
     GREATERT,           // >
     LESST,              // <
     NEGATION,           // !
+    COLON,              // :
     //CHAR OPERATORS
     PLUS,               // +
     MINUS,              // -
     MULT,               // *
     DIV,                // /
     //STATEMENTS
-    LOGIC_STATEMENT,    // if(something)  && else
+    LOGIC_STATEMENT,    // if(something) else while elif
     //OTHER
     COMMENT             //; YOUR COMMENT HERE ;
 }Token_Type;

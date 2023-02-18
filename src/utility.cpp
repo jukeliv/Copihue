@@ -1,5 +1,6 @@
 #include "../include/utility.h"
 
+
 bool isalpha(char c)
 {
     return(isalnum(c) || c == '.' || c == '_' || c == '/' || c == '\\');

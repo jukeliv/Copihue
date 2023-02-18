@@ -1,16 +1,11 @@
-(these things are not organized in order)
-
-- ADD A MAP FOR VARIABLES AND A CHECK ( YOU CAN'T CHANGE TYPES OF VARIABLES THAT ARE ALREADY ASSIGNED)                                      ❌
-- ADD A MAP FOR MACROS ( MACROS ARE MORE COMPLEX AND THEY HAVE A LOT OF INSTRUCTIONS IN THEM, NEED A MAP TO ORGANIZE IT AND CALL THEM )     ❌
-- ADD A MACRO CALLING SYMBOL                                                                                                                ❌
-- ADD FUNCTION ARGUMENTS                                                                                                                    ❌
-- ADD STRUCTS                                                                                                                               ❌
-- ADD ABILITY TO INCLUDE OTHER SCRIPTS                                                                                                      ❌
-- ADD "get" FUNCTION TO GET A REFERENCE TO A PARTICULAR PLACE IN AN ARRAY                                                                   ❌
-- ADD ABILITY TO SET A VARIABLE VALUE TO A FUNCTION                                                                                         ❌
-- ADD FUNCTION RETURN TYPE                                                                                                                  ❌
-
-COMPILERS
-- UPDATE LUA COMPILER                                                                                                                       ❌
-- ADD MORE LANGUAGES ( JS MAYBE? )                                                                                                          ❌
-- ADD INTERPRETER ( NOT FOR THE NEAR FUTURE )                                                                                               ❌
+# Copihue
+- Add ability to include other scripts
+- Add structs
+- Add ability to set a variable value to a function return value
+- Add documentation
+# System to include other scripts
+- Made a file that especifies what are going to be the scripts added into the file.
+  also the main file of the program, and then smash all together into one file, separating the C++ includes
+  and the code, and put every include 
+# Compiler
+- Add compilation optimizations ( we don't need the code to be to much human readable lol, just optimize it )
